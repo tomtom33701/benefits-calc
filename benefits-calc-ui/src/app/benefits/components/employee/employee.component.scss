@@ -1,0 +1,130 @@
+@import "../../../themes/variables.scss";
+:host {
+  .wrapper {
+    display: grid;
+    grid: 1fr / 2fr 1fr;
+    @media screen and (max-width: 992px) {
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    }
+    gap: 2rem 2rem;
+
+    padding: 2rem;
+    padding-bottom: 7rem;
+  }
+  .employee {
+    &__card {
+      padding: 2rem;
+    }
+    &__title {
+      margin-bottom: 1.5rem;
+    }
+    &__hr {
+      margin: 1.5rem 0;
+    }
+    &__h1 {
+      display: inline;
+      font-size: 1.5rem;
+    }
+    &__icon {
+      margin-right: 1rem;
+    }
+    &__field {
+      max-width: 800px;
+      min-width: 150px;
+      width: 100%;
+      display: block;
+      &:not(:last-child) {
+        margin-bottom: 2rem;
+      }
+    }
+    &__button-group {
+      padding-top: 2rem;
+      &__button {
+        width: 200px;
+      }
+    }
+  }
+  .accordion {
+    &__h2 {
+      font-size: 1rem;
+    }
+    &__description {
+      align-self: center;
+    }
+    &__icon {
+      align-self: center;
+      padding-right: 0.5rem;
+    }
+  }
+  .dependent {
+    &__field {
+      max-width: 800px;
+      min-width: 150px;
+      width: 100%;
+      display: block;
+      &:not(:last-child) {
+        margin-bottom: 2rem;
+      }
+    }
+    &__h3 {
+      font-size: 1rem;
+    }
+  }
+  .price {
+    &__card {
+      padding: 2rem;
+      @media screen and (min-width: 992px) {
+        position: sticky;
+        top: 75px;
+      }
+    }
+    &__title {
+      margin-bottom: 1.5rem;
+    }
+    &__hr {
+      margin: 1.5rem 0;
+      border: 2px #fff solid;
+    }
+    &__h1 {
+      display: inline;
+      font-size: 1.5rem;
+    }
+    &__h2 {
+      margin-left: 1rem;
+      font-size: 1rem;
+    }
+    &__icon {
+      margin-right: 1rem;
+    }
+    &__dl {
+      font-size: 1rem;
+    }
+    &__wrap {
+      display: flex;
+      align-items: flex-end;
+      flex-flow: row wrap;
+      border-bottom: 1px #fff solid;
+      padding-bottom: 1.5rem;
+    }
+    &__wrap--total{
+      border-bottom: 0;
+      padding: 1.5rem 0 0 0;
+    }
+    &__dt {
+      width: 150px;
+      font-weight: bold;
+    }
+    &__dd {
+      margin-inline-start: 0;
+      flex-basis: 1fr;
+      flex-grow: 1;
+    }
+    &__dd--invalid {
+      color: red;
+    }
+    &__dt--total {
+      font-size: 1.2rem;
+      color: yellow;
+    }
+  }
+}

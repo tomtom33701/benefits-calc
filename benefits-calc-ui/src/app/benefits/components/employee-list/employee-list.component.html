@@ -1,0 +1,32 @@
+<div class="emplist">
+  <section>
+    <h1 class="emplist__h1">List of Employees</h1>
+    <hr />
+    <p class="emplist__p">The following employees have been recorded in the system.</p>
+    <p class="emplist__p--error" *ngIf="error$ | async as error">An error occurred fetching data: {{error}}</p>
+    <table class="emplist__table mat-elevation-z8" *ngIf="employees$ | async as employees" mat-table [dataSource]="employees">
+      <ng-container matColumnDef="edit">
+        <th mat-header-cell *matHeaderCellDef>Edit Benefits</th>
+        <td mat-cell *matCellDef="let emp">
+          <button color="primary" mat-raised-button (click)="selectEmployee(emp)">
+            Edit
+          </button>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> Employee ID </th>
+        <td mat-cell *matCellDef="let emp"> {{emp.employeeId}}</td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Employee Name (Last Name, First Name) </th>
+        <td mat-cell *matCellDef="let emp"> {{emp.lastName}}, {{emp.firstName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="last4Ssn">
+        <th mat-header-cell *matHeaderCellDef> SSN </th>
+        <td mat-cell *matCellDef="let emp"> {{emp.ssn.getLast4()}} </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </section>
+</div>

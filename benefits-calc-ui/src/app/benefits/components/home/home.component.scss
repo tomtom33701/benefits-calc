@@ -1,0 +1,10 @@
+.hero {
+  border-radius: 0;
+  height: 10em;
+  display: grid;
+  justify-content: space-around;
+  align-content: space-around;
+  mat-card-content {
+    text-align: center;
+  }
+}

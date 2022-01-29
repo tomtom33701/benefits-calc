@@ -1,0 +1,12 @@
+@import '../../../themes/variables.scss';
+.footer-container {
+  height: $benefits-calc-footer-height;
+  font-size: 1rem;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  box-shadow: -3px 0 6px 2px rgb(0 0 0 / 30%);
+  padding: 1em;
+  display: grid;
+  align-content: space-around;
+}

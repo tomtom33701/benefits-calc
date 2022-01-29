@@ -1,0 +1,12 @@
+:host {
+  .emplist{
+    padding: 1rem 1rem;
+    &__table {
+      width: 100%;
+    }
+    &__p--error {
+      color: red;
+      font-weight: bold;
+    }
+  }
+}

@@ -1,0 +1,178 @@
+<div class="wrapper">
+  <section class="employee">
+    <mat-card class="employee__card">
+      <mat-card-title class="employee__title">
+        <mat-icon class="employee__icon">person_add</mat-icon>
+        <h1 class="employee__h1">{{formTitle}}</h1>
+      </mat-card-title>
+      <hr class="employee__hr" />
+      <mat-card-content>
+        <form class="employee__form" novalidate (ngSubmit)="save()" [formGroup]="employeeForm">
+          <mat-form-field class="employee__field" appearance="fill">
+            <mat-label>Employee First Name</mat-label>
+            <input type="text" autocomplete="off" matInput formControlName="firstName"
+              [errorStateMatcher]="errorStateMatcher" maxlength="50" placeholder="Employee First Name">
+            <mat-hint>Please enter the employee's first name</mat-hint>
+            <mat-error *ngIf="firstName.errors?.['required']">
+              First Name is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="firstName.errors?.['minlength'] || firstName.errors?.['maxlength']">
+              First name length must be between 3 and 50 characters
+            </mat-error>
+            <mat-error *ngIf="firstName.errors?.['pattern']">
+              First name can contain only letters, dashes, or apostrophes
+            </mat-error>
+
+          </mat-form-field>
+
+          <mat-form-field class="employee__field" appearance="fill">
+            <mat-label>Employee Last Name</mat-label>
+            <input type="text" matInput formControlName="lastName" [errorStateMatcher]="errorStateMatcher"
+              maxlength="50" placeholder="Employee Last Name">
+            <mat-hint>Please enter the employee's last name</mat-hint>
+            <mat-error *ngIf="lastName.errors?.['required']">
+              Last Name is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="lastName.errors?.['minlength'] || lastName.errors?.['maxlength']">
+              Last name length must be between 3 and 50 characters
+            </mat-error>
+            <mat-error *ngIf="lastName.errors?.['pattern']">
+              Last name can contain only letters, dashes, or apostrophes
+            </mat-error>
+
+          </mat-form-field>
+
+          <mat-form-field class="employee__field" appearance="fill">
+            <mat-label>Employee Social Security Number</mat-label>
+            <input type="text" matInput formControlName="ssn" [errorStateMatcher]="errorStateMatcher" maxlength="11"
+              placeholder="Employee Social Security Number (e.g., 999-99-999)">
+            <mat-hint>Please enter the employee's Social Security Number</mat-hint>
+            <mat-error *ngIf="ssn.errors?.['required']">
+              Social Security Number is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="!ssn.errors?.['required'] && ssn.errors?.['pattern']">
+              Social Security Number must be entered as ###-##-####
+            </mat-error>
+
+          </mat-form-field>
+          <mat-accordion class="accordion">
+            <mat-expansion-panel class="accordion__panel">
+              <mat-expansion-panel-header>
+                <mat-panel-title class="accordion__title">
+                  <mat-icon class="accordion__icon">people</mat-icon>
+                  <h2 class="accordion__h2">Add Dependents </h2>
+                </mat-panel-title>
+                <mat-panel-description class="accordion__description">
+                  Click here to add any dependents for employee (i.e., spouse and/or children)
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <button mat-raised-button color="primary" (click)="addDependent()" *ngIf="dependents.length===0">Add
+                Dependent</button>
+
+              <div formArrayName="dependents" class="dependent">
+                <div [formGroupName]="i" *ngFor="let dep of dependents.controls; let i=index">
+                  <mat-panel-title class="dependent__title">
+                    <h3 class="dependent__h3"> Dependent # {{i+1}} </h3>
+                  </mat-panel-title>
+
+                  <mat-form-field class="dependent__field" appearance="fill">
+                    <mat-label>Dependent First Name</mat-label>
+                    <input type="text" matInput formControlName="firstName" [errorStateMatcher]="errorStateMatcher"
+                      maxlength="50" placeholder="Dependent First Name">
+                    <mat-hint>Please enter the dependent's first name</mat-hint>
+                    <mat-error *ngIf="firstName.errors?.['required']">
+                      First Name is <strong>required</strong>
+                    </mat-error>
+                    <mat-error *ngIf="firstName.errors?.['minlength'] || firstName.errors?.['maxlength']">
+                      First name length must be between 3 and 50 characters
+                    </mat-error>
+                    <mat-error *ngIf="firstName.errors?.['pattern']">
+                      First name can contain only letters, dashes, or apostrophes
+                    </mat-error>
+
+                  </mat-form-field>
+
+                  <mat-form-field class="dependent__field" appearance="fill">
+                    <mat-label>Dependent Last Name</mat-label>
+                    <input type="text" matInput formControlName="lastName" [errorStateMatcher]="errorStateMatcher"
+                      maxlength="50" placeholder="Dependent Last Name">
+                    <mat-hint>Please enter the dependent's last name</mat-hint>
+                    <mat-error *ngIf="lastName.errors?.['required']">
+                      Last Name is <strong>required</strong>
+                    </mat-error>
+                    <mat-error *ngIf="lastName.errors?.['minlength'] || lastName.errors?.['maxlength']">
+                      Last name length must be between 3 and 50 characters
+                    </mat-error>
+                    <mat-error *ngIf="lastName.errors?.['pattern']">
+                      Last name can contain only letters, dashes, or apostrophes
+                    </mat-error>
+
+                  </mat-form-field>
+
+                  <mat-form-field class="dependent__field" appearance="fill">
+                    <mat-label>Dependent Social Security Number</mat-label>
+                    <input type="text" matInput formControlName="ssn" [errorStateMatcher]="errorStateMatcher"
+                      maxlength="11" placeholder="Dependent Social Security Number (e.g., 999-99-999)">
+                    <mat-hint>Please enter the dependent's Social Security Number</mat-hint>
+                    <mat-error *ngIf="ssn.errors?.['required']">
+                      Social Security Number is <strong>required</strong>
+                    </mat-error>
+                    <mat-error *ngIf="!ssn.errors?.['required'] && ssn.errors?.['pattern']">
+                      Social Security Number must be entered as ###-##-####
+                    </mat-error>
+                  </mat-form-field>
+                  <hr *ngIf="(i+1) !== dependents.controls.length" />
+
+                  <button mat-raised-button color="primary" *ngIf="(i+1) === dependents.controls.length"
+                    (click)="addDependent()">Add Another Dependent</button>
+
+                </div>
+
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+          <div class="employee__button-group">
+            <button class="employee__button-group__button" type="submit" mat-raised-button color="primary">Add
+              Employee</button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </section>
+  <aside class="price">
+    <mat-card class="price__card">
+      <mat-card-title class="price__title">
+        <mat-icon class="price__icon"> attach_money</mat-icon>
+        <h1 class="price__h1">Employee Benefits Quote</h1>
+      </mat-card-title>
+      <hr class="price__hr" />
+      <mat-card-content>
+        <dl class="price__dl">
+          <div class="price__wrap">
+            <dt class="price__dt">Employee Cost:</dt>
+            <dd class="price__dd" [ngClass]="{'price__dd--invalid': !isEmployeeValid()}">{{isEmployeeValid() ?
+              "$1000.00"
+              : "Form incomplete" }}</dd>
+          </div>
+          <div class="price__wrap" *ngIf="dependents.controls.length">
+            <h2 class="price__h2" >
+              Dependent Costs
+            </h2>
+          </div>
+          <ng-component *ngFor="let c of dependents.controls">
+            <div class="price__wrap">
+              <dt class="price__dt">{{c.value.firstName}} {{c.value.lastName}}</dt>
+              <dd class="price__dd">$100.00</dd>
+            </div>
+          </ng-component>
+          <div class="price__wrap price__wrap--total">
+            <dt class="price__dt price__dt--total">Total:</dt>
+            <dd class="price__dd" [ngClass]="{'price__dd--invalid': !isEmployeeValid()}">{{isEmployeeValid() ?
+              "$1000.00"
+              : "Form incomplete" }}</dd>
+          </div>
+        </dl>
+      </mat-card-content>
+    </mat-card>
+  </aside>
+</div>

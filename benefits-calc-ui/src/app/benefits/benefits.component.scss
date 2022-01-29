@@ -1,0 +1,7 @@
+@import '../themes/variables.scss';
+main{
+  font-size: 1rem;
+  padding-top: $benefits-calc-header-height;
+  height: calc(100% - #{$benefits-calc-footer-height});
+
+}
