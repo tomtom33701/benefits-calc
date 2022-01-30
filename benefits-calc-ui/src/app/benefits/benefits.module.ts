@@ -14,6 +14,7 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { employeeBenefitsReducer } from './state/benefits.reducer';
 import { HttpClientModule } from '@angular/common/http';
 import { BenefitsEffects } from './effects/benefits.effects';
+import { BenefitPriceComponent } from './components/benefit-price/benefit-price.component';
 
 
 const routes: Routes = [
@@ -35,7 +36,8 @@ const routes: Routes = [
     EmployeeListComponent,
     FooterComponent,
     HomeComponent,
-    EmployeeComponent
+    EmployeeComponent,
+    BenefitPriceComponent
   ],
   imports: [
     RouterModule.forChild(routes),

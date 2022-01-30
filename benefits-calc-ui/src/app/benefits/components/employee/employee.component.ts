@@ -1,11 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, ValidatorFn, Validators } from '@angular/forms';
+import { getBenefitQuote } from './../../state/benefits.reducer';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormControlStatus, FormGroup, FormGroupDirective, NgForm, ValidatorFn, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { IPerson, Person} from '@app/benefits/Models/person';
 import { Employee, IEmployee } from '@app/benefits/Models/employee';
+import { IPerson, Person } from '@app/benefits/Models/person';
+import * as Actions from '@app/benefits/state/benefits.actions';
+import { getError, IBenefitsState } from '@app/benefits/state/benefits.reducer';
+import { Store } from '@ngrx/store';
+import { debounceTime, Observable, Subscription } from 'rxjs';
+import { IBenefitsCalculation } from '@app/benefits/Models/benefits-calculation';
+import { Router } from '@angular/router';
 
-
-/** Error when invalid control is dirty, touched, or submitted. */
 class AddEmployeeStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;
@@ -13,8 +18,8 @@ class AddEmployeeStateMatcher implements ErrorStateMatcher {
   }
 }
 class Expressions {
-  private constructor(){}
-  public static readonly validNameExpression = /[A-Za-z]+(['/-][A-Za-z])*/g;
+  private constructor() { }
+  public static readonly validNameExpression = /[A-Za-z]+(['/-]?[A-Za-z])*/g;
   public static readonly validSsnExpression = /^\d{3}-\d{2}-\d{4}$/g;
 }
 
@@ -28,17 +33,25 @@ const nameValidations: ValidatorFn[] = [
   templateUrl: './employee.component.html',
   styleUrls: ['./employee.component.scss']
 })
-export class EmployeeComponent implements OnInit {
+export class EmployeeComponent implements OnInit, OnDestroy {
   public formTitle: string;
   public employeeForm: FormGroup;
   public errorStateMatcher: ErrorStateMatcher = new AddEmployeeStateMatcher();
-
+  public error$?: Observable<string>;
+  public benefitCalculation$?: Observable<IBenefitsCalculation | null>;
   public employee: IEmployee;
+  public dependents: FormArray;
   private dependentPersons: IPerson[] = [];
-  constructor(private fb: FormBuilder) {
+  private formStatusSubscription: Subscription;
+  constructor(
+    private fb: FormBuilder,
+    private store: Store<IBenefitsState>,
+    private router: Router
+    ) {
     this.formTitle = "Add Employee";
     this.employee = new Employee();
 
+    this.dependents = this.fb.array([]);
     this.employeeForm = this.fb.group({
       firstName: new FormControl(this.employee.firstName, nameValidations),
       lastName: new FormControl(this.employee.lastName, nameValidations),
@@ -46,32 +59,30 @@ export class EmployeeComponent implements OnInit {
         Validators.pattern(Expressions.validSsnExpression),
         Validators.required
       ]),
-      dependents: this.fb.array([])
+      dependents: this.dependents
     });
+    this.formStatusSubscription = this.employeeForm.statusChanges.pipe(
+      debounceTime(800)
+    ).subscribe(status => this.handleFormStatus(status));
 
   }
-  public get dependents(): FormArray {
-    return this.employeeForm.get('dependents') as FormArray;
+  ngOnDestroy(): void {
+    this.formStatusSubscription.unsubscribe();
   }
-  public get firstName(): AbstractControl {
-    return this.employeeForm.get('firstName')!;
+
+  ngOnInit(): void {
+    this.error$ = this.store.select(getError);
+    this.benefitCalculation$ = this.store.select(getBenefitQuote);
+
   }
-  public get lastName(): AbstractControl {
-    return this.employeeForm.get('lastName')!;
-  }
-  public get ssn(): AbstractControl {
-    return this.employeeForm.get('ssn')!;
+  private handleFormStatus(status: FormControlStatus) {
+    if(status === 'VALID') {
+      this.store.dispatch(Actions.requestBenefitQuote({employee: this.formEmployee}));
+    }
   }
   public addDependent(): void {
     return this.dependents.push(this.buildDependent());
   }
-  public isEmployeeValid(): boolean {
-    for (const c of [this.firstName,this.lastName,this.ssn]) {
-      if(c.invalid) return false;
-    }
-    return true;
-  }
-
   private buildDependent(): FormGroup {
     const person = new Person();
     this.dependentPersons.push(person);
@@ -84,10 +95,15 @@ export class EmployeeComponent implements OnInit {
       ]),
     });
   }
-  ngOnInit(): void {
-
+  private get formEmployee(): IEmployee {
+    return Employee.create(this.employeeForm.value as IEmployee);
   }
   public save(): void {
+    if (this.employeeForm.invalid) {
+      return;
+    }
 
+    this.store.dispatch(Actions.saveEmployee({employee: this.formEmployee}));
+    this.router.navigate(['/benefits/employee-list']);
   }
 }

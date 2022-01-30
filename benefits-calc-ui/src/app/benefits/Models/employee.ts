@@ -18,12 +18,17 @@ export interface IEmployee extends IPerson {
   dependents?: IPerson[];
 }
 
-export class Employee implements IEmployee{
+export class Employee implements IEmployee {
   constructor(
-   public firstName?: string,
-   public lastName?: string,
-   public ssn: SsnValueObject = new SsnValueObject(''),
-   public employeeId?: number,
-   public dependents?: IPerson[]
-  ) { }
+    public firstName?: string,
+    public lastName?: string,
+    public ssn: SsnValueObject = new SsnValueObject(''),
+    public employeeId?: number,
+    public dependents?: IPerson[]) {}
+    public static create(employee: IEmployee | Omit<IEmployee, 'ssn'> & {ssn: string}) {
+      const {firstName, lastName, employeeId, dependents} = employee;
+      const ssn = typeof employee.ssn === 'string' ? new SsnValueObject(employee.ssn) : employee.ssn;
+      return new Employee(firstName, lastName, ssn, employeeId, dependents)
+    }
 }
+

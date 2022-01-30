@@ -1,5 +1,6 @@
 import { IEmployee } from './../Models/employee';
 import { createAction, props } from "@ngrx/store";
+import { IBenefitsCalculation } from '../Models/benefits-calculation';
 
 export const loadEmployees = createAction(
   '[Employees] Load Employees'
@@ -30,7 +31,22 @@ export const loadEmployeesFailure = createAction(
   props<{error: string}>()
 );
 
-export const saveEmployeesFailure = createAction(
+export const requestBenefitQuote = createAction(
+  '[Employees] Request Benefit Quote',
+  props<{employee: IEmployee}>()
+);
+
+export const requestBenefitQuoteSuccess = createAction(
+  '[Employees] Request Benefit Quote Success',
+  props<{calculation: IBenefitsCalculation}>()
+);
+
+export const requestBenefitQuoteFail = createAction(
+  '[Employees] Request Benefit Quote Failed',
+  props<{error: string}>()
+);
+
+export const saveEmployeeFailure = createAction(
   '[Employees] Save Failed',
   props<{error: string}>()
 );

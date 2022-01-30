@@ -26,8 +26,18 @@ export class BenefitsEffects {
         ofType(BenefitsActions.saveEmployee),
         concatMap(({employee}) => this.benefitsService.saveEmployee(employee).pipe(
           map(employee => BenefitsActions.saveEmployeeSuccess({employee})),
-          catchError(error => of(BenefitsActions.saveEmployeesFailure(error)))
+          catchError(error => of(BenefitsActions.saveEmployeeFailure(error)))
         ))
       )
+    });
+
+    public requestQuote$ = createEffect(() => {
+      return this.actions$.pipe(
+        ofType(BenefitsActions.requestBenefitQuote),
+        mergeMap(({employee}) => this.benefitsService.requestQuote(employee).pipe(
+          map(calculation => BenefitsActions.requestBenefitQuoteSuccess({calculation})),
+          catchError(error => of(BenefitsActions.requestBenefitQuoteFail(error)))
+        )
+      ))
     });
 }

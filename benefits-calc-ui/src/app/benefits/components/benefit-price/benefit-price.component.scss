@@ -1,0 +1,60 @@
+.price {
+  @media screen and (min-width: 992px) {
+    position: sticky;
+    top: 75px;
+  }
+  &__card {
+    padding: 2rem;
+  }
+  &__title {
+    margin-bottom: 1.5rem;
+  }
+  &__hr {
+    margin: 1.5rem 0;
+    border: 2px #fff solid;
+  }
+  &__h1 {
+    display: inline;
+    font-size: 1.5rem;
+  }
+  &__icon {
+    margin-right: 1rem;
+  }
+  &__dl {
+    font-size: 1rem;
+  }
+  &__wrap {
+    display: flex;
+    align-items: flex-end;
+    flex-flow: row wrap;
+    border-bottom: 1px #fff solid;
+    padding: 1.5rem 0;
+  }
+  &__wrap--total{
+    border-bottom: 0;
+    padding: 1.5rem 0 0 0;
+  }
+  &__dt {
+    width: 20rem;
+    font-weight: bold;
+  }
+  &__dd {
+    margin-inline-start: 0;
+    flex-basis: 1fr;
+    flex-grow: 1;
+  }
+  &__dd--invalid {
+    color: red;
+  }
+  &__dt--total {
+    font-size: 1.2rem;
+    color: yellow;
+  }
+  &__details {
+    padding: 1rem 0 0 1rem;
+  }
+  &__summary {
+    margin-left: -1rem;
+    font-weight: bold;
+  }
+}

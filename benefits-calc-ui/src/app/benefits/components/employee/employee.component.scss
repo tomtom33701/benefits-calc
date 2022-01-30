@@ -10,6 +10,10 @@
 
     padding: 2rem;
     padding-bottom: 7rem;
+    &__error {
+      padding: 2rem;
+      color: red;
+    }
   }
   .employee {
     &__card {
@@ -39,8 +43,11 @@
     }
     &__button-group {
       padding-top: 2rem;
-      &__button {
-        width: 200px;
+    }
+    &__submit {
+      width: 200px;
+      &--disabled {
+        cursor: not-allowed;
       }
     }
   }
@@ -69,62 +76,9 @@
     &__h3 {
       font-size: 1rem;
     }
-  }
-  .price {
-    &__card {
-      padding: 2rem;
-      @media screen and (min-width: 992px) {
-        position: sticky;
-        top: 75px;
-      }
-    }
-    &__title {
-      margin-bottom: 1.5rem;
-    }
-    &__hr {
-      margin: 1.5rem 0;
-      border: 2px #fff solid;
-    }
-    &__h1 {
-      display: inline;
-      font-size: 1.5rem;
-    }
-    &__h2 {
-      margin-left: 1rem;
-      font-size: 1rem;
-    }
-    &__icon {
+    &__buttons > * {
       margin-right: 1rem;
     }
-    &__dl {
-      font-size: 1rem;
-    }
-    &__wrap {
-      display: flex;
-      align-items: flex-end;
-      flex-flow: row wrap;
-      border-bottom: 1px #fff solid;
-      padding-bottom: 1.5rem;
-    }
-    &__wrap--total{
-      border-bottom: 0;
-      padding: 1.5rem 0 0 0;
-    }
-    &__dt {
-      width: 150px;
-      font-weight: bold;
-    }
-    &__dd {
-      margin-inline-start: 0;
-      flex-basis: 1fr;
-      flex-grow: 1;
-    }
-    &__dd--invalid {
-      color: red;
-    }
-    &__dt--total {
-      font-size: 1.2rem;
-      color: yellow;
-    }
   }
+
 }

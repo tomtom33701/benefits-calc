@@ -1,16 +1,22 @@
 import { IEmployee } from '@app/benefits/Models/employee';
 import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
-import { IBenefitsRate } from '../Models/benefits-calculation';
+import { IBenefitsCalculation } from '../Models/benefits-calculation';
 import * as Actions from './benefits.actions';
 
 export interface IBenefitsState {
   employees: IEmployee[];
-  benefitsCalculation: IBenefitsRate[];
+  benefitsCalculation: IBenefitsCalculation | null;
   currentEmployeeId: number | null;
   error: string;
 }
+const initialState: Readonly<IBenefitsState> = {
+  employees: [],
+  benefitsCalculation: null,
+  currentEmployeeId: null,
+  error: ''
+};
 
-const getEmployeesFeatureState = createFeatureSelector<IBenefitsState>('employees');
+const getEmployeesFeatureState = createFeatureSelector<IBenefitsState>('benefits');
 
 export const getEmployees = createSelector(
   getEmployeesFeatureState,
@@ -33,12 +39,12 @@ export const getCurrentEmployee = createSelector(
   (state, employeeId) => state.employees.find(e => e.employeeId === employeeId)
 );
 
-const initialState: Readonly<IBenefitsState> = {
-  employees: [],
-  benefitsCalculation: [],
-  currentEmployeeId: null,
-  error: ''
-}
+export const getBenefitQuote = createSelector(
+  getEmployeesFeatureState,
+  state => state.benefitsCalculation
+);
+
+
 export const employeeBenefitsReducer = createReducer<IBenefitsState>(
   initialState,
   on(Actions.loadEmployees, state => {
@@ -59,7 +65,7 @@ export const employeeBenefitsReducer = createReducer<IBenefitsState>(
       error: ''
     };
   }),
-  on(Actions.saveEmployeesFailure, (state, {error}) => {
+  on(Actions.saveEmployeeFailure, (state, {error}) => {
     return {
       ...state,
       error
@@ -70,7 +76,7 @@ export const employeeBenefitsReducer = createReducer<IBenefitsState>(
       ...state,
       employees: [],
       currentEmployeeId: null,
-      error: error
+      error
     };
   }),
   on(Actions.saveEmployeeSuccess, (state, {employee}) => {
@@ -79,6 +85,26 @@ export const employeeBenefitsReducer = createReducer<IBenefitsState>(
     return {
       ...state,
       employees: clone
+    };
+  }),
+  on(Actions.requestBenefitQuote, (state) => {
+    return {
+      ...state,
+      benefitsCalculation: null
+    };
+  }),
+  on(Actions.requestBenefitQuoteSuccess, (state, {calculation}) => {
+    return {
+      ...state,
+      benefitsCalculation: calculation,
+      error: ''
+    };
+  }),
+  on(Actions.requestBenefitQuoteFail, (state, {error}) => {
+    return {
+      ...state,
+      benefitsCalculation: null,
+      error
     };
   })
 );

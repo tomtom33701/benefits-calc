@@ -1,0 +1,58 @@
+<aside class="price">
+  <mat-card class="price__card">
+    <mat-card-title class="price__title">
+      <mat-icon class="price__icon">attach_money</mat-icon>
+      <h1 class="price__h1">Employee Benefits Quote</h1>
+    </mat-card-title>
+    <hr class="price__hr" />
+    <ng-container *ngIf="!benefitsCalculation; else calculations">
+      <mat-card-content>
+        <p class="price__p">
+          Complete the form to see real-time price calculations.
+        </p>
+        <p class="price__p">
+          Waiting for valid form input&hellip;
+        </p>
+      </mat-card-content>
+    </ng-container>
+    <ng-template #calculations>
+      <mat-card-content *ngIf="benefitsCalculation as calc">
+        <dl class="price__dl">
+          <div class="price__wrap">
+            <dt class="price__dt">Employee's Annual Cost</dt>
+            <dd class="price__dd">
+              {{calc.employeeBenefitCost.annualBenefitCost | currency}}
+            </dd>
+          </div>
+          <div class="price__wrap">
+            <dt class="price__dt">Employee's Cost Per Pay Period</dt>
+            <dd class="price__dd">
+              {{calc.employeeBenefitCost.benefitCostPerPayPeriod | currency}}
+            </dd>
+          </div>
+          <details class="price__details" *ngFor="let rate of calc.dependentCosts">
+            <summary class="price__summary">
+              Dependent Costs for {{rate[0].firstName}} {{rate[0].lastName}}
+            </summary>
+            <div class="price__wrap">
+              <dt class="price__dt">Dependent Annual Cost</dt>
+              <dd class="price__dd">{{rate[1].annualBenefitCost | currency}}</dd>
+            </div>
+            <div class="price__wrap">
+              <dt class="price__dt">Dependent Cost Per Pay Period</dt>
+              <dd class="price__dd">{{rate[1].benefitCostPerPayPeriod | currency}}</dd>
+            </div>
+          </details>
+          <div class="price__wrap price__wrap--total">
+            <dt class="price__dt price__dt--total">Pay Period Total</dt>
+            <dd class="price__dd">{{payPeriodTotal | currency}}</dd>
+          </div>
+          <div class="price__wrap price__wrap--total">
+            <dt class="price__dt price__dt--total">Annual Total</dt>
+            <dd class="price__dd">{{annualTotal | currency}}</dd>
+          </div>
+        </dl>
+      </mat-card-content>
+    </ng-template>
+  </mat-card>
+</aside>
