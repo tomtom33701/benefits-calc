@@ -1,6 +1,4 @@
-﻿using BenefitsCalcAPI.Models;
-
-namespace BenefitsCalcAPI.Validators;
+﻿namespace BenefitsCalcAPI.Validators;
 
 public class EmployeeValidator: AbstractValidator<EmployeeViewModel>
 {

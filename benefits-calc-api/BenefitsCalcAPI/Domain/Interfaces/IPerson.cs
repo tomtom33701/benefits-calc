@@ -1,6 +1,4 @@
-﻿using Domain.ValueObjects;
-
-namespace Domain.Interfaces;
+﻿namespace Domain.Interfaces;
 
 public interface IPerson
 {

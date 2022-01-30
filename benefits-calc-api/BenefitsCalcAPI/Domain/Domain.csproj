@@ -10,7 +10,6 @@
     <Folder Include="Entities\" />
     <Folder Include="Interfaces\" />
     <Folder Include="DTOs\" />
-    <Folder Include="Queries\" />
     <Folder Include="Repository\" />
   </ItemGroup>
 

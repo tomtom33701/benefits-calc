@@ -5,4 +5,4 @@ public record Employee(
     string LastName, 
     SsnVO Ssn, 
     IReadOnlyList<IPerson> Dependents
-) : IPerson;
+): IPerson;

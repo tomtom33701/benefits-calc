@@ -1,26 +1,23 @@
-﻿
-namespace Persistence;
+﻿namespace Persistence;
 
 public class EmployeeRepository: IAsyncRepository<EmployeeDto>
 {
-    private readonly SqliteConnection _connection;
+    private readonly IDatabase<EmployeeDto> _db;
 
-    public EmployeeRepository(SqliteConnection connection)
+    public EmployeeRepository(IDatabase<EmployeeDto> db)
     {
-        _connection = connection;
-    }
-    public async Task<EmployeeDto> GetAsync(int id)
-    {
-        await _connection.ExecuteAsync()
+        _db = db;
     }
 
     public async Task<EmployeeDto> SaveAsync(EmployeeDto entity)
     {
-        throw new NotImplementedException();
+        return await _db.QuerySingle(
+            "INSERT INTO Employees(FirstName, LastName, Ssn) Values(@FirstName, @LastName, @Ssn) RETURNING * ", entity);
+
     }
 
     public async Task<IReadOnlyList<EmployeeDto>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return (await _db.GetAll("Employees")).ToImmutableList();
     }
 }

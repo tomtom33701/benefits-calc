@@ -1,7 +1,4 @@
-﻿using BenefitsCalcAPI.Models;
-using Domain.ValueObjects;
-
-namespace BenefitsCalcAPI.Validators;
+﻿namespace BenefitsCalcAPI.Validators;
 
 public class PersonValidator: AbstractValidator<IPersonViewModel>
 {
