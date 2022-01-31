@@ -7,6 +7,7 @@ import { StoreModule } from '@ngrx/store';
 import { AppComponent } from './app.component';
 import { MaterialModule } from './shared/material.module';
 import { EffectsModule } from '@ngrx/effects';
+import { HttpClientModule } from '@angular/common/http';
 
 
 const routes: Routes = [
@@ -24,7 +25,8 @@ const routes: Routes = [
     BrowserAnimationsModule,
     FormsModule,
     StoreModule.forRoot({}, {}),
-    EffectsModule.forRoot([])
+    EffectsModule.forRoot([]),
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,43 +1,26 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IBenefitsCalculation } from '@app/benefits/Models/benefits-calculation';
 import { Employee, IEmployee } from '@app/benefits/Models/employee';
-import { SsnValueObject } from '@app/benefits/Models/ValueObjects/ssn-value-object';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 
-let mockData: IEmployee[] = [
-  new Employee("John", "Smith", SsnValueObject.parse("231323232"), 100),
-  new Employee("Adam", "Brown", SsnValueObject.parse("351765346"), 101),
-  new Employee("Leslie", "Jones", SsnValueObject.parse("643539799"), 102),
-  new Employee("Amanda", "Marcel", SsnValueObject.parse("567667697"), 103),
-  new Employee("Tom", "Toups", SsnValueObject.parse("123456789"), 200),
-  new Employee("John", "Smith", SsnValueObject.parse("987654321"), 201),
-  new Employee("Alan", "Maher", SsnValueObject.parse("990939393"), 202),
-];
-const sub = new BehaviorSubject<IEmployee[]>(mockData);
 @Injectable({
   providedIn: 'root'
 })
 export class BenefitsService {
-  constructor() { }
-
+  constructor(private http: HttpClient) { }
+  private readonly baseUrl = "https://localhost:7093";
+  private readonly employeesEndpoint = "employees";
   public getAllEmployees(): Observable<IEmployee[]> {
-    return sub.asObservable();
+    return this.http.get<IEmployee[]>(`${this.baseUrl}/${this.employeesEndpoint}`).
+      pipe(map(emps => emps.map(e=>Employee.create(e))));
   }
   public saveEmployee(employee: IEmployee): Observable<IEmployee> {
-    const e: IEmployee = {
-      ...employee,
-      employeeId: generateId()
-    };
-    const emps = [...mockData.slice(0), e];
-    sub.next(emps);
-    return of(e);
+    return this.http.post<IEmployee>(`${this.baseUrl}/${this.employeesEndpoint}`,employee);
   }
   public requestQuote(employee: IEmployee): Observable<IBenefitsCalculation> {
     return of(getQuote(employee));
   }
-}
-function generateId(): number {
-  return Math.max(...mockData.map(x=>x.employeeId ?? 0)) + 1;
 }
 function getQuote(employee: IEmployee) {
   const quote: IBenefitsCalculation = {

@@ -1,23 +1,34 @@
+using BenefitsCalcAPI.Extensions;
+using Domain.Commands;
+using Domain.Queries;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var connString = builder.Configuration.GetConnectionString("BenefitsDb");
 
-var services = builder.Services;
+
 var assembly = Assembly.GetExecutingAssembly();
-services.AddScoped(_ => new SqliteConnection(connString));
-services.AddScoped<IDatabase<EmployeeDto>, Database<EmployeeDto>>();
-services.AddScoped<IDatabase<DependentDto>, Database<DependentDto>>();
-services.AddScoped<IAsyncRepository<EmployeeDto>, EmployeeRepository>();
-services.AddScoped<IAsyncRepository<DependentDto>, DependentRepository>();
-services.AddEndpointsApiExplorer();
-services.AddSwaggerGen();
-services.AddMediatR(assembly);
-services.AddValidatorsFromAssembly(assembly);
+builder.Services.AddScoped(_ => new SqliteConnection(connString));
+builder.Services.AddScoped<IDatabase<EmployeeDto>, Database<EmployeeDto>>();
+builder.Services.AddScoped<IDatabase<DependentDto>, Database<DependentDto>>();
+builder.Services.AddScoped<IAsyncRepository<EmployeeDto>, EmployeeRepository>();
+builder.Services.AddScoped<IAsyncRepository<DependentDto>, DependentRepository>();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddMediatR(typeof(GetEmployeesQuery).Assembly);
+builder.Services.AddValidatorsFromAssembly(assembly);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowOrigin",
+        builder => builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
 
 
 var app = builder.Build();
 
-await EnsureDb(app.Services, app.Logger);
+await app.ValidateOrSetUpDatabase(connString);
 
 if (!app.Environment.IsDevelopment())
 {
@@ -34,38 +45,37 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("AllowOrigin");
 //app.UseHttpsRedirection();
+app.MapGet("/employess/{id}", async (int id, IMediator mediator) =>
+{
+    var employee = await mediator.Send(new GetEmployeeByIdQuery { Id = id });
+    if (employee is null) Results.NotFound();
 
-//app.MapPost("/employees", async)
+    return Results.Ok(EmployeeViewModel.CreateInstance(employee));
+
+}).WithName("GetEmployeeById")
+.Produces<EmployeeViewModel>()
+.Produces(StatusCodes.Status404NotFound);
+
+app.MapGet("/employees", async (IMediator mediator) =>
+{
+    var employees = await mediator.Send(new GetEmployeesQuery());
+    return employees.Select(EmployeeViewModel.CreateInstance);
+}).WithName("GetAllEmployees");
+
+app.MapPost("/employees", async (EmployeeViewModel vm, IMediator mediator, IValidator<EmployeeViewModel> validator) =>
+{
+    if (!validator.TryValidate(vm, out var validationResult)) return validationResult;
+
+    var entity = await mediator.Send(new CreateEmployeeCommand(vm.ToEntity()));
+    var result = EmployeeViewModel.CreateInstance(entity);
+    return Results.Created($"/employees/{result.EmployeeId}", result);
+
+})
+.WithName("Create Employee")
+.ProducesValidationProblem()
+.Produces<EmployeeViewModel>(StatusCodes.Status201Created);
+
 
 app.Run();
-
-
-
-async Task EnsureDb(IServiceProvider services, ILogger logger)
-{
-    logger.LogInformation("Ensuring database exists at connection string '{connectionString}'", connString);
-    using var db = services.CreateScope().ServiceProvider.GetRequiredService<SqliteConnection>();
-    var createEmployeeSql = $@"CREATE TABLE IF NOT EXISTS [Employees] (
-                  [EmployeeId] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL
-                , [FirstName] text NOT NULL
-                , [LastName] text NOT NULL
-                , [Ssn] text NOT NULL
-                );";
-    var createDependentsSql = @"
-        CREATE TABLE IF NOT EXISTS [Dependents] (
-          [Ssn] text NOT NULL
-        , [FirstName] text NOT NULL
-        , [LastName] text NOT NULL
-        , [EmployeeId] bigint NOT NULL
-        , CONSTRAINT [PK_Ssn] PRIMARY KEY ([Ssn])
-        , CONSTRAINT [FK_Dependents_Employees] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([EmployeeId]) ON DELETE NO ACTION ON UPDATE NO ACTION
-        );
-        CREATE INDEX [Dependents_IDX_EmployeeId] ON [Dependents] ([EmployeeId] ASC);
-        ";
-
-    await db.ExecuteAsync(createEmployeeSql);
-    await db.ExecuteAsync(createDependentsSql);
-
-}

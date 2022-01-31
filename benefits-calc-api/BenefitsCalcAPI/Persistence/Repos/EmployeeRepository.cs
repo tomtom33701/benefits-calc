@@ -16,8 +16,20 @@ public class EmployeeRepository: IAsyncRepository<EmployeeDto>
 
     }
 
+    public async Task<EmployeeDto> GetAsync(int id)
+    {
+        const string query = "select * from Employees where EmployeeId = @id";
+
+        return await _db.GetSingleOrDefault(query, new { id });
+    }
+
+    public async Task<IReadOnlyList<EmployeeDto>> GetListAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<IReadOnlyList<EmployeeDto>> GetAllAsync()
     {
-        return (await _db.GetAll("Employees")).ToImmutableList();
+        return (await _db.Filter("select * from Employees")).ToImmutableList();
     }
 }

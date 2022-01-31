@@ -14,8 +14,13 @@ public class Database<TDto> : IDatabase<TDto>
         return _connection.QuerySingleAsync<TDto>(query, dto);
     }
 
-    public Task<IEnumerable<TDto>> GetAll(string tableName)
+    public Task<IEnumerable<TDto>> Filter(string query)
     {
-        return _connection.QueryAsync<TDto>($"SELECT * FROM {tableName}");
+        return _connection.QueryAsync<TDto>(query);
+    }
+
+    public Task<TDto> GetSingleOrDefault(string query, object @params)
+    {
+        return _connection.QuerySingleOrDefaultAsync<TDto>(query, @params);
     }
 }

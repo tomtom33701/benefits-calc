@@ -2,7 +2,7 @@
 
 public interface IPerson
 {
-    string FirstName { get; init; }
-    string LastName { get; init; }
-    SsnVO Ssn { get; init; }
+    string? FirstName { get; }
+    string? LastName { get; }
+    SsnVO Ssn { get; }
 }

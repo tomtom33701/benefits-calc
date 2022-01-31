@@ -1,6 +1,6 @@
-﻿namespace Domain.Commands;
+﻿namespace Domain.Queries;
 
-public class GetEmployeesHandler: IRequestHandler<GetEmployeesCommand, IReadOnlyList<Employee>>
+public class GetEmployeesHandler: IRequestHandler<GetEmployeesQuery, IReadOnlyList<Employee>>
 {
     private readonly IAsyncRepository<EmployeeDto> _empRepo;
     private readonly IAsyncRepository<DependentDto> _dependentRepo;
@@ -11,7 +11,7 @@ public class GetEmployeesHandler: IRequestHandler<GetEmployeesCommand, IReadOnly
         _empRepo = empRepo;
         _dependentRepo = dependentRepo;
     }
-    public async Task<IReadOnlyList<Employee>> Handle(GetEmployeesCommand request, CancellationToken _)
+    public async Task<IReadOnlyList<Employee>> Handle(GetEmployeesQuery request, CancellationToken _)
     {
         var employeeDtosTask = _empRepo.GetAllAsync();
         var dependentsDtosTask = _dependentRepo.GetAllAsync();
@@ -32,8 +32,8 @@ public class GetEmployeesHandler: IRequestHandler<GetEmployeesCommand, IReadOnly
     private static Employee ToEmployee(EmployeeDto empDto, IEnumerable<DependentDto> depDto)
     {
         var dependents = depDto
-            .Select(dDto => new Dependent(dDto.FirstName, dDto.LastName, dDto.Ssn))
+            .Select(dDto => new Dependent(dDto.FirstName, dDto.LastName, dDto.Ssn!))
             .ToImmutableList();
-        return new(empDto.EmployeeId!.Value, empDto.FirstName, empDto.LastName, empDto.Ssn, dependents);
+        return new(empDto.EmployeeId!.Value, empDto.FirstName, empDto.LastName, empDto.Ssn!, dependents);
     }
 }

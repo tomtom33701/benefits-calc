@@ -9,3 +9,6 @@ global using Domain.Interfaces;
 global using Persistence;
 global using BenefitsCalcAPI.Models;
 global using Domain.ValueObjects;
+global using Domain.Entities;
+global using System.Collections.Immutable;
+global using System.Diagnostics;
