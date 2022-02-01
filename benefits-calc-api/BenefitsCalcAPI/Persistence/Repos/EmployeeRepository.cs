@@ -1,35 +1,33 @@
 ﻿namespace Persistence;
 
-public class EmployeeRepository: IAsyncRepository<EmployeeDto>
+public sealed class EmployeeRepository: AsyncRepository<EmployeeDto>
 {
-    private readonly IDatabase<EmployeeDto> _db;
 
-    public EmployeeRepository(IDatabase<EmployeeDto> db)
+    public EmployeeRepository(IDatabase db) : base(db)
     {
-        _db = db;
     }
 
-    public async Task<EmployeeDto> SaveAsync(EmployeeDto entity)
+    public override async Task<EmployeeDto> SaveAsync(EmployeeDto entity)
     {
-        return await _db.QuerySingle(
+        return await _db.QuerySingleAsync(
             "INSERT INTO Employees(FirstName, LastName, Ssn) Values(@FirstName, @LastName, @Ssn) RETURNING * ", entity);
 
     }
 
-    public async Task<EmployeeDto> GetAsync(int id)
+    public override async Task<EmployeeDto> GetAsync(int id)
     {
         const string query = "select * from Employees where EmployeeId = @id";
 
-        return await _db.GetSingleOrDefault(query, new { id });
+        return await _db.GetSingleOrDefaultAsync<EmployeeDto>(query, new { id });
     }
 
-    public async Task<IReadOnlyList<EmployeeDto>> GetListAsync(int id)
+    public override Task<IReadOnlyList<EmployeeDto>> GetListAsync(int id)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<IReadOnlyList<EmployeeDto>> GetAllAsync()
+    public override async Task<IReadOnlyList<EmployeeDto>> GetAllAsync()
     {
-        return (await _db.Filter("select * from Employees")).ToImmutableList();
+        return (await _db.FilterAsync<EmployeeDto>("select * from Employees")).ToImmutableList();
     }
 }

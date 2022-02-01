@@ -4,7 +4,7 @@ public class CreateEmployeeCommandHandler: IRequestHandler<CreateEmployeeCommand
 {
     private readonly IAsyncRepository<EmployeeDto> _employeeRepo;
     private readonly IAsyncRepository<DependentDto> _dependentRepo;
-    private static readonly ParallelOptions ParallelOptions = new() { MaxDegreeOfParallelism =  Environment.ProcessorCount};
+    private static readonly ParallelOptions ParallelOptions = new() { MaxDegreeOfParallelism =  2};
     public CreateEmployeeCommandHandler(IAsyncRepository<EmployeeDto> employeeRepo, IAsyncRepository<DependentDto> dependentRepo)
     {
         _employeeRepo = employeeRepo;

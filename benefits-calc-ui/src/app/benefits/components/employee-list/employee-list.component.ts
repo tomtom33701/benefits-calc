@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Employee, IEmployee } from '@app/benefits/Models/employee';
+import * as Actions from '@app/benefits/state/benefits.actions';
 import { getEmployees, getError, IBenefitsState } from '@app/benefits/state/benefits.reducer';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { IEmployee } from '@app/benefits/Models/employee';
-import * as Actions from '@app/benefits/state/benefits.actions';
+import { map, Observable } from 'rxjs';
 @Component({
   selector: 'app-employee-list',
   templateUrl: './employee-list.component.html',
@@ -15,7 +15,9 @@ export class EmployeeListComponent implements OnInit {
   public error$: Observable<string>;
 
   constructor(private store: Store<IBenefitsState>) {
-    this.employees$ = store.select(getEmployees);
+    this.employees$ = store.select(getEmployees).pipe(
+      map(dtos => dtos.map(Employee.createFromDto))
+    );
     this.error$ = store.select(getError);
   }
 
@@ -25,11 +27,11 @@ export class EmployeeListComponent implements OnInit {
 
   selectEmployee(employeeId: number): void {
 
-    this.store.dispatch(Actions.setCurrentEmployee({employeeId}));
+    this.store.dispatch(Actions.setCurrentEmployee({ employeeId }));
     //to-do perform navigation
   }
 
   public get displayedColumns(): string[] {
-    return ['id','name','last4Ssn','edit'];
+    return ['id', 'name', 'last4Ssn', 'edit'];
   }
 }

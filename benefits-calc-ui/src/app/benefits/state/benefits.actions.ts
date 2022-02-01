@@ -1,6 +1,6 @@
-import { IEmployee } from './../Models/employee';
 import { createAction, props } from "@ngrx/store";
 import { IBenefitsCalculation } from '../Models/benefits-calculation';
+import { IEmployeeDto } from './../Models/employee-dto';
 
 export const loadEmployees = createAction(
   '[Employees] Load Employees'
@@ -8,12 +8,12 @@ export const loadEmployees = createAction(
 
 export const saveEmployee = createAction(
   '[Employees] Save Employee',
-  props<{employee: IEmployee}>()
+  props<{employee: IEmployeeDto}>()
 );
 
 export const saveEmployeeSuccess = createAction(
   '[Employees] Save Employee Success',
-  props<{employee: IEmployee}>()
+  props<{employee: IEmployeeDto}>()
 );
 
 export const setCurrentEmployee = createAction(
@@ -23,7 +23,7 @@ export const setCurrentEmployee = createAction(
 
 export const loadEmployeesSuccess = createAction(
   '[Employees] Loaded Successfully',
-  props<{employees: IEmployee[]}>()
+  props<{employees: IEmployeeDto[]}>()
 );
 
 export const loadEmployeesFailure = createAction(
@@ -33,7 +33,7 @@ export const loadEmployeesFailure = createAction(
 
 export const requestBenefitQuote = createAction(
   '[Employees] Request Benefit Quote',
-  props<{employee: IEmployee}>()
+  props<{employee: IEmployeeDto}>()
 );
 
 export const requestBenefitQuoteSuccess = createAction(

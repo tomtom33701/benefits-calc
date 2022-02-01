@@ -1,10 +1,10 @@
-import { IEmployee } from '@app/benefits/Models/employee';
 import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
 import { IBenefitsCalculation } from '../Models/benefits-calculation';
+import { IEmployeeDto } from './../Models/employee-dto';
 import * as Actions from './benefits.actions';
 
 export interface IBenefitsState {
-  employees: IEmployee[];
+  employees: IEmployeeDto[];
   benefitsCalculation: IBenefitsCalculation | null;
   currentEmployeeId: number | null;
   error: string;

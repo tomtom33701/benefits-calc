@@ -1,31 +1,33 @@
 ﻿namespace Persistence;
 
-public class DependentRepository: IAsyncRepository<DependentDto>
+public sealed class DependentRepository: AsyncRepository<DependentDto>
 {
-    private readonly IDatabase<DependentDto> _db;
-
     private const string InsertQuery =
         @"INSERT INTO Dependents(FirstName, LastName, Ssn, EmployeeId)
           Values(@FirstName, @LastName, @Ssn, @EmployeeId)
           RETURNING * ";
 
-    public DependentRepository(IDatabase<DependentDto> db) => _db = db;
+    public DependentRepository(IDatabase db) : base(db)
+    {
+    }
 
-    public async Task<DependentDto> SaveAsync(DependentDto entity) =>
-        await _db.QuerySingle(InsertQuery, entity);
+    public override async Task<DependentDto> SaveAsync(DependentDto entity) =>
+        await _db.QuerySingleAsync(InsertQuery, entity);
 
-    public async Task<DependentDto> GetAsync(int id)
+    public override Task<DependentDto> GetAsync(int id)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<IReadOnlyList<DependentDto>> GetListAsync(int id)
+    public override async Task<IReadOnlyList<DependentDto>> GetListAsync(int id)
     {
         var query = $"select * from Dependents where EmployeeId ={id}";
-        return (await _db.Filter(query)).ToImmutableList();
+        return (await _db.FilterAsync<DependentDto>(query)).ToImmutableList();
     }
 
 
-    public async Task<IReadOnlyList<DependentDto>> GetAllAsync() => 
-        (await _db.Filter("Select * from Dependents")).ToImmutableList();
+    public override async Task<IReadOnlyList<DependentDto>> GetAllAsync() => 
+        (await _db.FilterAsync<DependentDto>("Select * from Dependents")).ToImmutableList();
+
+
 }

@@ -35,4 +35,12 @@ export class BenefitPriceComponent implements OnInit {
     this.benefitsCalculation?.dependentCosts?.forEach(value => totalAmount += value[1].benefitCostPerPayPeriod);
     return totalAmount;
   }
+  public get annualRemainderTotal(): number {
+    if(!this._benefitsCalculation) {
+      return 0;
+    }
+    let totalRemainder = this.benefitsCalculation?.employeeBenefitCost.remainder!;
+    this.benefitsCalculation?.dependentCosts?.forEach(value => totalRemainder += value[1].remainder);
+    return totalRemainder;
+  }
 }

@@ -1,4 +1,5 @@
 import { IPerson } from '@app/benefits/Models/person';
+import { IEmployeeDto } from './employee-dto';
 import { SsnValueObject } from "./ValueObjects/ssn-value-object";
 
 /**
@@ -24,11 +25,15 @@ export class Employee implements IEmployee {
     public lastName?: string,
     public ssn: SsnValueObject = new SsnValueObject(''),
     public employeeId?: number,
-    public dependents?: IPerson[]) {}
-    public static create(employee: IEmployee | Omit<IEmployee, 'ssn'> & {ssn: string}) {
-      const {firstName, lastName, employeeId, dependents} = employee;
-      const ssn = typeof employee.ssn === 'string' ? new SsnValueObject(employee.ssn) : employee.ssn;
-      return new Employee(firstName, lastName, ssn, employeeId, dependents)
-    }
+    public dependents?: IPerson[]) { }
+  public static createFromDto(employeeDto: IEmployeeDto) {
+    const { firstName, lastName, employeeId} = employeeDto;
+    const dependents: IPerson[] = employeeDto.dependents.map(d => ({
+      ...d,
+      ssn: new SsnValueObject(d.ssn)
+    }));
+    const ssn = new SsnValueObject(employeeDto.ssn);
+    return new Employee(firstName, lastName, ssn, employeeId, dependents)
+  }
 }
 

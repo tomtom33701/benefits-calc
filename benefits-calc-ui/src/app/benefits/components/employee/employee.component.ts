@@ -7,9 +7,10 @@ import { IPerson, Person } from '@app/benefits/Models/person';
 import * as Actions from '@app/benefits/state/benefits.actions';
 import { getError, IBenefitsState } from '@app/benefits/state/benefits.reducer';
 import { Store } from '@ngrx/store';
-import { debounceTime, Observable, Subscription } from 'rxjs';
+import { debounceTime, Observable, Subscription, map } from 'rxjs';
 import { IBenefitsCalculation } from '@app/benefits/Models/benefits-calculation';
 import { Router } from '@angular/router';
+import { IEmployeeDto } from '@app/benefits/Models/employee-dto';
 
 class AddEmployeeStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -77,7 +78,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
   }
   private handleFormStatus(status: FormControlStatus) {
     if(status === 'VALID') {
-      this.store.dispatch(Actions.requestBenefitQuote({employee: this.formEmployee}));
+      this.store.dispatch(Actions.requestBenefitQuote({employee: this.formEmployeeDto}));
     }
   }
   public addDependent(): void {
@@ -95,15 +96,24 @@ export class EmployeeComponent implements OnInit, OnDestroy {
       ]),
     });
   }
-  private get formEmployee(): IEmployee {
-    return Employee.create(this.employeeForm.value as IEmployee);
+  private get formEmployeeDto(): IEmployeeDto {
+    const getDigits = (str?: any) => (typeof str === 'string') && str.replace(/\D/g,'');
+    return {
+      ...this.employeeForm.value,
+      ssn: getDigits(this.employeeForm.value.ssn),
+      dependents: this.employeeForm.value.dependents?.map((d: { ssn: string; }) => ({
+        ...d,
+        ssn: getDigits(d.ssn)
+      }))
+    };
   }
+
   public save(): void {
     if (this.employeeForm.invalid) {
       return;
     }
 
-    this.store.dispatch(Actions.saveEmployee({employee: this.formEmployee}));
+    this.store.dispatch(Actions.saveEmployee({employee: this.formEmployeeDto}));
     this.router.navigate(['/benefits/employee-list']);
   }
 }

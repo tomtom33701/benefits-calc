@@ -1,10 +1,11 @@
-import { IPerson } from '@app/benefits/Models/person';
+import { IPersonDto } from './employee-dto';
 export interface IBenefitsCalculation {
   employeeBenefitCost: IBenefitsRate;
-  dependentCosts: [IPerson, IBenefitsRate][];
+  dependentCosts: [IPersonDto, IBenefitsRate][];
 }
 export interface IBenefitsRate {
   annualBenefitCost: number;
   benefitCostPerPayPeriod: number;
+  remainder: number;
 }
 

@@ -30,6 +30,12 @@
               {{calc.employeeBenefitCost.benefitCostPerPayPeriod | currency}}
             </dd>
           </div>
+          <div class="price__wrap">
+            <dt class="price__dt">Pay Period Annual Remainder</dt>
+            <dd class="price__dd">
+              {{calc.employeeBenefitCost.remainder | currency}}
+            </dd>
+          </div>
           <details class="price__details" *ngFor="let rate of calc.dependentCosts">
             <summary class="price__summary">
               Dependent Costs for {{rate[0].firstName}} {{rate[0].lastName}}
@@ -42,10 +48,18 @@
               <dt class="price__dt">Dependent Cost Per Pay Period</dt>
               <dd class="price__dd">{{rate[1].benefitCostPerPayPeriod | currency}}</dd>
             </div>
+            <div class="price__wrap">
+              <dt class="price__dt">Dependent Pay Period Annual Remainder</dt>
+              <dd class="price__dd">{{rate[1].remainder | currency}}</dd>
+            </div>
           </details>
           <div class="price__wrap price__wrap--total">
             <dt class="price__dt price__dt--total">Pay Period Total</dt>
             <dd class="price__dd">{{payPeriodTotal | currency}}</dd>
+          </div>
+          <div class="price__wrap price__wrap--total">
+            <dt class="price__dt price__dt--total">Pay Period Annual Remainder Total</dt>
+            <dd class="price__dd">{{annualRemainderTotal | currency}}</dd>
           </div>
           <div class="price__wrap price__wrap--total">
             <dt class="price__dt price__dt--total">Annual Total</dt>

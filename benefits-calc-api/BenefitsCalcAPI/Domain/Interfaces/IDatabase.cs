@@ -1,8 +1,8 @@
 ﻿namespace Domain.Interfaces;
 
-public interface IDatabase<TDto>
+public interface IDatabase
 {
-    Task<TDto> QuerySingle(string query, TDto dto);
-    Task<IEnumerable<TDto>> Filter(string query);
-    Task<TDto> GetSingleOrDefault(string query, object @params);
+    Task<TDto> QuerySingleAsync<TDto>(string query, TDto dto);
+    Task<IEnumerable<TDto>> FilterAsync<TDto>(string query);
+    Task<TDto> GetSingleOrDefaultAsync<TDto>(string query, object @params);
 }
